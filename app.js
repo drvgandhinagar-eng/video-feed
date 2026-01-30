@@ -10,7 +10,7 @@ const videos = [
   "videos/v7.mp4"
 ];
 
-const AUTO_SCROLL_DELAY = 10000; // 10 seconds
+const AUTO_SCROLL_DELAY = 15000; // 15 seconds
 
 let index = 0;
 let videoSinceAd = 0;
@@ -20,23 +20,23 @@ let soundEnabled = false;
 let activeCard = null;
 let autoScrollTimer = null;
 
-/* ---------- CORE AUTO SCROLL ENGINE ---------- */
-function startAutoScroll(card) {
-  clearAutoScroll();
-
-  if (!autoScrollEnabled) return;
-
-  activeCard = card;
-  autoScrollTimer = setTimeout(() => {
-    scrollToNext(card);
-  }, AUTO_SCROLL_DELAY);
-}
+/* ---------------- CORE AUTO SCROLL ---------------- */
 
 function clearAutoScroll() {
   if (autoScrollTimer) {
     clearTimeout(autoScrollTimer);
     autoScrollTimer = null;
   }
+}
+
+function startAutoScroll(card) {
+  clearAutoScroll();
+
+  if (!autoScrollEnabled) return;
+
+  autoScrollTimer = setTimeout(() => {
+    scrollToNext(card);
+  }, AUTO_SCROLL_DELAY);
 }
 
 function scrollToNext(card) {
@@ -46,27 +46,52 @@ function scrollToNext(card) {
   card.nextElementSibling?.scrollIntoView({ behavior: "smooth" });
 }
 
-/* ---------- OBSERVER (KNOW WHICH CARD IS ACTIVE) ---------- */
+/* ---------------- VIDEO CONTROL ---------------- */
+
+function pauseAllVideosExcept(activeVideo) {
+  document.querySelectorAll("video").forEach(v => {
+    if (v !== activeVideo) {
+      v.pause();
+      v.muted = true;
+    }
+  });
+}
+
+/* ---------------- INTERSECTION OBSERVER ---------------- */
+
 const observer = new IntersectionObserver(
   entries => {
     entries.forEach(entry => {
-      if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
-        startAutoScroll(entry.target);
+      if (entry.isIntersecting && entry.intersectionRatio > 0.65) {
+        if (activeCard === entry.target) return;
+
+        activeCard = entry.target;
+
+        const video = activeCard.querySelector("video");
+
+        if (video) {
+          pauseAllVideosExcept(video);
+          video.muted = !soundEnabled;
+          video.play().catch(() => {});
+        }
+
+        startAutoScroll(activeCard);
       }
     });
   },
-  { threshold: 0.6 }
+  { threshold: 0.65 }
 );
 
-/* ---------- VIDEO CARD ---------- */
+/* ---------------- VIDEO CARD ---------------- */
+
 function createVideoCard(src) {
   const card = document.createElement("div");
   card.className = "card";
 
   const video = document.createElement("video");
   video.src = src;
-  video.muted = !soundEnabled;
-  video.autoplay = true;
+  video.muted = true;
+  video.autoplay = false;
   video.playsInline = true;
   video.preload = "auto";
 
@@ -92,12 +117,10 @@ function createVideoCard(src) {
     autoScrollEnabled = !autoScrollEnabled;
     autoBtn.innerHTML = autoScrollEnabled ? "🔁" : "⏸️";
     if (!autoScrollEnabled) clearAutoScroll();
+    else startAutoScroll(card);
   };
 
   ui.append(likeBtn, soundBtn, autoBtn);
-
-  /* Video end = request scroll (NOT timer) */
-  video.onended = () => scrollToNext(card);
 
   card.append(video, ui);
   observer.observe(card);
@@ -105,23 +128,24 @@ function createVideoCard(src) {
   return card;
 }
 
-/* ---------- AD CARD ---------- */
+/* ---------------- AD CARD ---------------- */
+
 function createAdCard() {
   const card = document.createElement("div");
   card.className = "card ad-card";
 
   card.innerHTML = `
-  <div class="ad-box">
-    <div class="ad-label">Sponsored</div>
-  </div>
-`;
-
+    <div class="ad-box">
+      <div class="ad-label">Sponsored</div>
+    </div>
+  `;
 
   observer.observe(card);
   return card;
 }
 
-/* ---------- FEED ENGINE ---------- */
+/* ---------------- FEED ENGINE ---------------- */
+
 function addNextItem() {
   if (videoSinceAd === 4) {
     feed.appendChild(createAdCard());
