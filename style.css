@@ -1,0 +1,117 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: black;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.phone {
+  width: 390px;
+  height: 100vh;
+  background: black;
+  overflow: hidden;
+  position: relative;
+}
+
+@media (max-width: 600px) {
+  .phone {
+    width: 100%;
+  }
+}
+
+.feed {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  padding-bottom: 70px; /* space for banner */
+}
+
+.card {
+  height: 100vh;
+  scroll-snap-align: start;
+  position: relative;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Right-side UI */
+.ui {
+  position: absolute;
+  right: 12px;
+  bottom: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  z-index: 10;
+}
+
+.ui button {
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: white;
+  font-size: 22px;
+  padding: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.ui button.active {
+  color: red;
+}
+
+/* Native Ad Card */
+.ad-card {
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ad-box {
+  width: 90%;
+  height: 60%;
+  background: #1c1c1c;
+  border-radius: 12px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.ad-label {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* Bottom banner */
+.banner {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  background: #1a1a1a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.feed::-webkit-scrollbar {
+  display: none;
+}
