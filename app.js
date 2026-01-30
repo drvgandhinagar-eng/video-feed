@@ -139,13 +139,17 @@ function createAdCard() {
 
   card.innerHTML = `
     <div class="ad-box">
-      <div class="ad-label">Sponsored</div>
+      <div class="ad-label">Sponsored Message</div>
+      <div class="ad-content">
+        Ads like this help us provide high-quality stories and information for free.
+      </div>
     </div>
   `;
 
   observer.observe(card);
   return card;
 }
+
 
 /* ---------------- FEED ENGINE ---------------- */
 
@@ -173,4 +177,5 @@ feed.addEventListener("scroll", () => {
     addNextItem();
   }
 });
+
 
