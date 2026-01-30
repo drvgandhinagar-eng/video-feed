@@ -111,11 +111,11 @@ function createAdCard() {
   card.className = "card ad-card";
 
   card.innerHTML = `
-    <div class="ad-box">
-      <div class="ad-label">Sponsored</div>
-      <div>Native Ad Slot</div>
-    </div>
-  `;
+  <div class="ad-box">
+    <div class="ad-label">Sponsored</div>
+  </div>
+`;
+
 
   observer.observe(card);
   return card;
