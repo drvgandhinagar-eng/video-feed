@@ -7,7 +7,10 @@ const videos = [
   "videos/v4.mp4",
   "videos/v5.mp4",
   "videos/v6.mp4",
-  "videos/v7.mp4"
+  "videos/v7.mp4",
+  "videos/v8.mp4",
+  "videos/v9.mp4",
+  "videos/v10.mp4"
 ];
 
 const AUTO_SCROLL_DELAY = 15000; // 15 seconds
@@ -170,3 +173,4 @@ feed.addEventListener("scroll", () => {
     addNextItem();
   }
 });
+
